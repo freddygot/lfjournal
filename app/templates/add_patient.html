@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Legg til Pasient{% endblock %}
+
+{% block content %}
+    <h2>Legg til ny pasient</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.first_name.label(class="form-label") }}
+            {{ form.first_name(class="form-control") }}
+            {% if form.first_name.errors %}
+                {% for error in form.first_name.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <!-- Repeter for de andre feltene på lignende måte -->
+        <div class="mb-3">
+            {{ form.last_name.label(class="form-label") }}
+            {{ form.last_name(class="form-control") }}
+            {% if form.last_name.errors %}
+                {% for error in form.last_name.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.personal_number.label(class="form-label") }}
+            {{ form.personal_number(class="form-control") }}
+            {% if form.personal_number.errors %}
+                {% for error in form.personal_number.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.birth_date.label(class="form-label") }}
+            {{ form.birth_date(class="form-control") }}
+            {% if form.birth_date.errors %}
+                {% for error in form.birth_date.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.gender.label(class="form-label") }}
+            {{ form.gender(class="form-control") }}
+            {% if form.gender.errors %}
+                {% for error in form.gender.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.address.label(class="form-label") }}
+            {{ form.address(class="form-control") }}
+            {% if form.address.errors %}
+                {% for error in form.address.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.postal_code.label(class="form-label") }}
+            {{ form.postal_code(class="form-control") }}
+            {% if form.postal_code.errors %}
+                {% for error in form.postal_code.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.municipality.label(class="form-label") }}
+            {{ form.municipality(class="form-control") }}
+            {% if form.municipality.errors %}
+                {% for error in form.municipality.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Legg til Pasient</button>
+    </form>
+{% endblock %}

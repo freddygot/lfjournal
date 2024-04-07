@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Avtale Detaljer{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Avtale Detaljer</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Pasient: {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Starttid: {{ appointment.start_datetime.strftime('%Y-%m-%d %H:%M') }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Sluttid: {{ appointment.end_datetime.strftime('%Y-%m-%d %H:%M') }}</h6>
+            {% if appointment.notes %}
+                <p class="card-text">Notater: {{ appointment.notes }}</p>
+            {% else %}
+                <p class="card-text">Ingen notater lagt til.</p>
+            {% endif %}
+        </div>
+    </div>
+
+<!-- Legg til en Sletteknapp for avtalen -->
+<form action="{{ url_for('delete_appointment', appointment_id=appointment.id) }}" method="POST">
+    <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne avtalen og alle tilhørende journalnotater?');">Slett Avtale</button>
+</form>
+
+<!-- Skjema for å legge til journalnotat -->
+<h4>Legg til journalnotat</h4>
+<form method="POST" action="{{ url_for('add_journal_entry', appointment_id=appointment.id) }}">
+    <div class="form-group">
+        <label for="journal_notes">Notater</label>
+        <textarea class="form-control" id="journal_notes" name="journal_notes" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Legg til notat</button>
+</form>
+
+    <h3>Journalnotater</h3>
+    {% if appointment.journal_entries %}
+        <ul>
+            {% for entry in appointment.journal_entries %}
+                <li>{{ entry.entry_date.strftime('%Y-%m-%d %H:%M') }} - {{ entry.notes }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Ingen journalnotater funnet.</p>
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Tilbake til Dashboard</a>
+</div>
+{% endblock %}
