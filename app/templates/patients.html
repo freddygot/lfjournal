@@ -2,13 +2,38 @@
 {% block content %}
 <div class="my-4">
     <h2>My Patients</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">{{ form.first_name.label }} {{ form.first_name(class_='form-control') }}</div>
-        <div class="mb-3">{{ form.last_name.label }} {{ form.last_name(class_='form-control') }}</div>
-        <!-- Gjenta for resten av feltene i skjemaet -->
-        <div class="mb-3">{{ form.submit(class_='btn btn-primary') }}</div>
-    </form>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerPatientModal">
+        Register Patient
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="registerPatientModal" tabindex="-1" aria-labelledby="registerPatientModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerPatientModalLabel">Register Patient</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">{{ form.first_name.label }} {{ form.first_name(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.last_name.label }} {{ form.last_name(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.birth_number.label }} {{ form.birth_number(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.birth_date.label }} {{ form.birth_date(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.phone_number.label }} {{ form.phone_number(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.email.label }} {{ form.email(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.gender.label }} {{ form.gender(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.address.label }} {{ form.address(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.postal_code.label }} {{ form.postal_code(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.municipality.label }} {{ form.municipality(class_='form-control') }}</div>
+                        <div class="mb-3">{{ form.submit(class_='btn btn-primary') }}</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="my-4">
     <h3>Registered Patients</h3>
@@ -20,7 +45,7 @@
                 <th>Birth Number</th>
                 <th>Phone Number</th>
                 <th>Email</th>
-                <!-- Legg til flere kolonner etter behov -->
+                <!-- Include additional columns here if needed -->
             </tr>
         </thead>
         <tbody>
@@ -31,7 +56,7 @@
                 <td>{{ patient.birth_number }}</td>
                 <td>{{ patient.phone_number }}</td>
                 <td>{{ patient.email }}</td>
-                <!-- Fyll inn flere datafelter som trengs -->
+                <!-- Include additional fields as necessary -->
             </tr>
             {% else %}
             <tr>

@@ -77,3 +77,7 @@ def patients():
     return render_template('patients.html', title='My Patients', form=form, patients=patients)
     
     
+
+@app.route("/test")
+def test():
+    return render_template('test.html')
