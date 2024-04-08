@@ -9,6 +9,8 @@
 <div>
     <div id="calendar"></div>
 </div>
+<!-- Inkluder modalen her -->
+{% include 'appointment_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
@@ -18,10 +20,30 @@
     
       var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        events: '/get_appointments' // Endepunkt for å hente avtaler
+        events: '/get_appointments', // Endepunkt for å hente avtaler
+        dateClick: function(info) {
+          // Åpne modalen for å legge til en avtale
+          $('#appointmentDate').val(info.dateStr);
+          $('#appointmentModal').modal('show');
+        }
       });
     
       calendar.render();
     });
-</script>
+    </script>
+    <script>
+        $('#appointmentForm').on('submit', function(e) {
+          e.preventDefault(); // Forhindre standard skjemainnsending
+          // Samle data fra skjemaet
+          var datetime = $('#appointmentDate').val();
+          var description = $('#appointmentDescription').val();
+          // Send data til serveren
+          $.post('/add_appointment', {datetime: datetime, description: description}, function() {
+            $('#appointmentModal').modal('hide'); // Lukk modalen
+            calendar.refetchEvents(); // Oppdater kalenderen
+          });
+        });
+        </script>
+        
+    
 {% endblock %}

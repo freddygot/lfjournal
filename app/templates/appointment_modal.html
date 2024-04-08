@@ -1,0 +1,26 @@
+<!-- appointment_modal.html -->
+<div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentModalLabel">Legg til avtale</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Lukk"></button>
+        </div>
+        <div class="modal-body">
+          <form id="appointmentForm">
+            <div class="mb-3">
+              <label for="appointmentDate" class="form-label">Dato og tid</label>
+              <input type="datetime-local" class="form-control" id="appointmentDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="appointmentDescription" class="form-label">Beskrivelse</label>
+              <input type="text" class="form-control" id="appointmentDescription" required>
+            </div>
+            <!-- Legg til flere felter som nødvendig -->
+            <button type="submit" class="btn btn-primary">Lagre avtale</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
