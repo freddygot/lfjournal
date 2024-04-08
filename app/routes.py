@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from app import app, db
 from app.forms import RegistrationForm, LoginForm, PatientForm
@@ -76,7 +76,28 @@ def patients():
     patients = Patient.query.filter_by(psychologist_id=current_user.id).all()
     return render_template('patients.html', title='My Patients', form=form, patients=patients)
     
-    
+@app.route("/get_appointments")
+def get_appointments():
+    appointments = Appointment.query.all()
+    events = []
+    for appointment in appointments:
+        events.append({
+            'title': appointment.description,
+            'start': appointment.datetime.isoformat(),
+            # Legg til flere felt som 'end' hvis nødvendig
+        })
+    return jsonify(events)
+
+@app.route("/add_appointment", methods=['POST'])
+def add_appointment():
+    datetime_str = request.form['datetime']
+    datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S') # Tilpasse formatet til FullCalendar
+    appointment = Appointment(datetime=datetime_obj, description=request.form['description'])
+    db.session.add(appointment)
+    db.session.commit()
+    return redirect(url_for('home'))
+
+   
 
 @app.route("/test")
 def test():

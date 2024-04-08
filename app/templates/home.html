@@ -1,7 +1,27 @@
+
 {% extends "base.html" %}
+
 {% block content %}
 <div class="py-5 text-center">
     <h2>Welcome to the Psychologist Journal</h2>
     <p class="lead">This is a secure platform for psychologists to manage their patients.</p>
 </div>
+<div>
+    <div id="calendar"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+    
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: '/get_appointments' // Endepunkt for å hente avtaler
+      });
+    
+      calendar.render();
+    });
+</script>
 {% endblock %}

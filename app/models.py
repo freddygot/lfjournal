@@ -35,7 +35,7 @@ class Patient(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     birth_number = db.Column(db.String(11), unique=True, nullable=False)
-    birth_date = db.Column(db.String(10), nullable=False)  # or db.Date for actual date objects
+    birth_date = db.Column(db.String(10), nullable=False)
     phone_number = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     gender = db.Column(db.String(10), nullable=False)
@@ -43,12 +43,11 @@ class Patient(db.Model):
     postal_code = db.Column(db.String(10), nullable=False)
     municipality = db.Column(db.String(50), nullable=False)
     psychologist_id = db.Column(db.Integer, db.ForeignKey('psychologist.id'), nullable=False)
-
+    patient_appointments = db.relationship('Appointment', backref='patient', lazy=True)
 
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     description = db.Column(db.String(200))
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
-    patient = db.relationship('Patient', backref='appointments')
     
