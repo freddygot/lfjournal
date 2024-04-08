@@ -50,8 +50,10 @@ def logout():
 @app.route("/patients", methods=['GET', 'POST'])
 @login_required
 def patients():
+    print("Metode: ", request.method)  # Debugging: Sjekk HTTP-metoden
     form = PatientForm()
     if form.validate_on_submit():
+        print("Formen er validert")  # Debugging: Sjekk om formen passerer validering
         patient = Patient(
             first_name=form.first_name.data,
             last_name=form.last_name.data,
@@ -69,5 +71,9 @@ def patients():
         db.session.commit()
         flash('Patient has been registered!', 'success')
         return redirect(url_for('patients'))
+    else:
+        print(form.errors)  # Skriver ut valideringsfeilene
     patients = Patient.query.filter_by(psychologist_id=current_user.id).all()
     return render_template('patients.html', title='My Patients', form=form, patients=patients)
+    
+    
