@@ -1,6 +1,10 @@
-<!-- Eksempel på login.html -->
-<form method="post">
-    <input type="email" name="email" placeholder="E-post" required>
-    <input type="password" name="password" placeholder="Passord" required>
-    <button type="submit">Logg inn</button>
-</form>
+{% extends "base.html" %}
+{% block content %}
+    <h2>Login</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.email.label }} {{ form.email() }}
+        {{ form.password.label }} {{ form.password() }}
+        {{ form.submit() }}
+    </form>
+{% endblock %}

@@ -1,10 +1,10 @@
-<!-- Eksempel på register.html -->
-<form method="post">
-    <input type="text" name="first_name" placeholder="Fornavn" required>
-    <input type="text" name="last_name" placeholder="Etternavn" required>
-    <input type="email" name="email" placeholder="E-post" required>
-    <input type="tel" name="phone_number" placeholder="Telefonnummer" required>
-    <input type="date" name="birth_date" placeholder="Fødselsdato" required>
-    <input type="password" name="password" placeholder="Passord" required>
-    <button type="submit">Registrer</button>
-</form>
+{% extends "base.html" %}
+{% block content %}
+    <h2>Register</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.email.label }} {{ form.email() }}
+        {{ form.password.label }} {{ form.password() }}
+        {{ form.submit() }}
+    </form>
+{% endblock %}

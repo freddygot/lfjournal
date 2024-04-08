@@ -1,19 +1,13 @@
 <!-- templates/navbar.html -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            {% if 'psychologist_id' in session %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('my_patients') }}">Mine pasienter</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('edit_profile') }}">Endre Profil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logg Ut</a></li>
-            {% else %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Logg Inn</a></li>
-            {% endif %}
-        </ul>
-    </div>
+<nav>
+    <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('patients') }}">My Patients</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+    </ul>
 </nav>

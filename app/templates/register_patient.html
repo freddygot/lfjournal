@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Register Patient</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.first_name.label }} {{ form.first_name() }}
+        {{ form.last_name.label }} {{ form.last_name() }}
+        <!-- Repeat for the rest of the fields -->
+        {{ form.submit() }}
+    </form>
+{% endblock %}

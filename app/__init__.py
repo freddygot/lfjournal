@@ -1,21 +1,16 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from config import Config
-from flask_migrate import Migrate
+from flask_login import LoginManager
 
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'  # Brukes for sesjoner, erstatt med en faktisk nøkkel
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///journal.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy()
+db = SQLAlchemy(app)
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
 
-    db.init_app(app)
-
-    migrate = Migrate(app, db)
-
-    with app.app_context():
-        from . import routes  # Importerer ruter
-        db.create_all()  # Oppretter databasetabeller
-
-    return app
+from app import routes
