@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="my-4">
+    <h2>My Patients</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.first_name.label }} {{ form.first_name(class_='form-control') }}</div>
+        <div class="mb-3">{{ form.last_name.label }} {{ form.last_name(class_='form-control') }}</div>
+        <!-- Gjenta for resten av feltene i skjemaet -->
+        <div class="mb-3">{{ form.submit(class_='btn btn-primary') }}</div>
+    </form>
+</div>
+<div class="my-4">
+    <h3>Registered Patients</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Birth Number</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <!-- Legg til flere kolonner etter behov -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td>{{ patient.first_name }}</td>
+                <td>{{ patient.last_name }}</td>
+                <td>{{ patient.birth_number }}</td>
+                <td>{{ patient.phone_number }}</td>
+                <td>{{ patient.email }}</td>
+                <!-- Fyll inn flere datafelter som trengs -->
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">No patients registered.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
