@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from app import db, login_manager
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 @login_manager.user_loader
@@ -42,3 +43,12 @@ class Patient(db.Model):
     postal_code = db.Column(db.String(10), nullable=False)
     municipality = db.Column(db.String(50), nullable=False)
     psychologist_id = db.Column(db.Integer, db.ForeignKey('psychologist.id'), nullable=False)
+
+
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    description = db.Column(db.String(200))
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
+    patient = db.relationship('Patient', backref='appointments')
+    
