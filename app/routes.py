@@ -1,8 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
+from datetime import datetime
 from app import app, db
 from app.forms import RegistrationForm, LoginForm, PatientForm
-from app.models import Psychologist, Patient
+from app.models import Psychologist, Patient, Appointment
 
 @app.route("/")
 @app.route("/home")
@@ -102,15 +103,33 @@ def get_appointments():
 
 @app.route("/add_appointment", methods=['POST'])
 def add_appointment():
-    datetime_str = request.form['datetime']
-    datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S') # Tilpasse formatet til FullCalendar
-    appointment = Appointment(datetime=datetime_obj, description=request.form['description'])
-    db.session.add(appointment)
-    db.session.commit()
-    return redirect(url_for('home'))
+    try:
+        datetime_str = request.form['datetime']
+        description = request.form['description']
+        patient_id = request.form.get('patient_id')
+        
+        # Prøv forskjellige datotidsformater
+        for fmt in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M'):
+            try:
+                datetime_obj = datetime.strptime(datetime_str, fmt)
+                break
+            except ValueError:
+                pass
+        else:
+            # Ingen av formatene matchet
+            return jsonify({"error": "Invalid datetime format"}), 400
+
+        if patient_id:
+            patient = Patient.query.get(patient_id)
+            if not patient:
+                return jsonify({"error": "Patient not found"}), 404
+        
+        appointment = Appointment(datetime=datetime_obj, description=description, patient_id=patient_id)
+        db.session.add(appointment)
+        db.session.commit()
+        return jsonify({"message": "Appointment added successfully"}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500
 
    
-
-@app.route("/test")
-def test():
-    return render_template('test.html')
