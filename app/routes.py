@@ -88,6 +88,30 @@ def get_patients():
     ]
     return jsonify(patient_list)
 
+@app.route("/patient/<int:patient_id>")
+@login_required
+def view_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    appointments = Appointment.query.filter_by(patient_id=patient_id).order_by(Appointment.datetime.desc()).all()
+    return render_template('patient_profile.html', patient=patient, appointments=appointments)
+
+@app.route("/patient/edit/<int:patient_id>", methods=['GET', 'POST'])
+@login_required
+def edit_patient(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    if request.method == 'POST':
+        # Oppdater pasientinformasjon basert på form data
+        patient.email = request.form['email']
+        patient.phone_number = request.form['phone_number']
+        # Oppdater flere felt basert på skjemaet
+        db.session.commit()
+        flash('Pasientinformasjon oppdatert', 'success')
+        return redirect(url_for('view_patient', patient_id=patient.id))
+    
+    return render_template('edit_patient.html', patient=patient)
+
+
+
     
 @app.route("/get_appointments")
 def get_appointments():

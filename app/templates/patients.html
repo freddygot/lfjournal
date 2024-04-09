@@ -56,7 +56,8 @@
                 <td>{{ patient.birth_number }}</td>
                 <td>{{ patient.phone_number }}</td>
                 <td>{{ patient.email }}</td>
-                <!-- Include additional fields as necessary -->
+                <td>
+                    <a href="/patient/{{ patient.id }}" class="btn btn-primary">View</a>
             </tr>
             {% else %}
             <tr>

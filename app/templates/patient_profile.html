@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Pasientprofil: {{ patient.first_name }} {{ patient.last_name }}</h2>
+<!-- Viser pasientens personalia -->
+<ul>
+    <li>E-post: {{ patient.email }}</li>
+    <li>Telefonnummer: {{ patient.phone_number }}</li>
+    <!-- Legg til flere personaliadetaljer her -->
+</ul>
+
+<!-- Rediger Pasient-knapp -->
+<a href="{{ url_for('edit_patient', patient_id=patient.id) }}" class="btn btn-secondary">Endre Personalia</a>
+
+<!-- Liste over avtaler -->
+<h3>Avtaler</h3>
+<ul>
+{% for appointment in appointments %}
+    <li>{{ appointment.datetime }} - {{ appointment.description }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
