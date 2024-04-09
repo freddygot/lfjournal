@@ -16,10 +16,12 @@
 
 {% block scripts %}
 <script>
+var calendar; // Definerer calendar på et høyere scope
+
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
 
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+   calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     events: '/get_appointments', // Endepunkt for å hente avtaler
     dateClick: function(info) {
