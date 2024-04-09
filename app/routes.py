@@ -119,11 +119,13 @@ def get_appointments():
     events = []
     for appointment in appointments:
         events.append({
+            'id': appointment.id,  # Pass på å inkludere ID her
             'title': appointment.description,
             'start': appointment.datetime.isoformat(),
             # Legg til flere felt som 'end' hvis nødvendig
         })
     return jsonify(events)
+
 
 @app.route("/add_appointment", methods=['POST'])
 def add_appointment():
@@ -156,4 +158,57 @@ def add_appointment():
         print(e)
         return jsonify({"error": "Internal server error"}), 500
 
-   
+@app.route("/update_appointment", methods=['POST'])
+@login_required
+def update_appointment():
+    try:
+        # Mottar data som JSON og printer den for feilsøking
+        data = request.get_json()
+        print("Mottatt data:", data)
+
+        appointment_id = data.get('id')
+        new_datetime_str = data.get('datetime')
+        new_description = data.get('description')
+        new_patient_id = data.get('patient_id')
+
+        # Sjekker og printer den mottatte avtale ID-en
+        print("Avtale ID:", appointment_id)
+
+        appointment = Appointment.query.get(appointment_id)
+        if not appointment:
+            print("Ingen avtale funnet med ID:", appointment_id)
+            return jsonify({"error": "Appointment not found"}), 404
+
+        # Printer ut den opprinnelige avtaleinformasjonen før oppdatering
+        print("Original avtale datetime:", appointment.datetime)
+        print("Original avtale beskrivelse:", appointment.description)
+
+        # Oppdaterer avtaleinformasjon
+        for fmt in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M'):
+            try:
+                appointment.datetime = datetime.strptime(new_datetime_str, fmt)
+                break
+            except ValueError:
+                continue
+        else:
+            print("Ugyldig datetime format:", new_datetime_str)
+            return jsonify({"error": "Invalid datetime format"}), 400
+
+        appointment.description = new_description
+
+        if new_patient_id:
+            patient = Patient.query.get(new_patient_id)
+            if not patient:
+                print("Ingen pasient funnet med ID:", new_patient_id)
+                return jsonify({"error": "Patient not found"}), 404
+            appointment.patient_id = new_patient_id
+
+        # Printer den oppdaterte avtaleinformasjonen
+        print("Oppdatert avtale datetime:", appointment.datetime)
+        print("Oppdatert avtale beskrivelse:", appointment.description)
+
+        db.session.commit()
+        return jsonify({"message": "Appointment updated successfully"}), 200
+    except Exception as e:
+        print("Feil under oppdatering av avtalen:", e)
+        return jsonify({"error": "Internal server error"}), 500

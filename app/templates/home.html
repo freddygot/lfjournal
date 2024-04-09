@@ -9,70 +9,106 @@
 <div>
     <div id="calendar"></div>
 </div>
-<!-- Inkluder modalen her -->
+<!-- Inkluder modaler her -->
 {% include 'appointment_modal.html' %}
+{% include 'edit_appointment_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
-    
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        events: '/get_appointments', // Endepunkt for å hente avtaler
-        dateClick: function(info) {
-          // Åpne modalen for å legge til en avtale
-          $('#appointmentDate').val(info.dateStr);
-          $('#appointmentModal').modal('show');
-        }
-      });
-    
-      calendar.render();
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    events: '/get_appointments', // Endepunkt for å hente avtaler
+    dateClick: function(info) {
+      // Åpne modalen for å legge til en ny avtale
+      $('#appointmentDate').val(info.dateStr);
+      $('#appointmentModal').modal('show');
+    },
+    eventClick: function(info) {
+  var eventObj = info.event;
+
+  // Sett verdien av det skjulte inputfeltet til eventets ID
+  $('#appointmentId').val(eventObj.id);
+
+  $('#editAppointmentDate').val(eventObj.start.toISOString().slice(0, 16));
+  $('#editAppointmentDescription').val(eventObj.title);
+  $('#editAppointmentModal').modal('show');
+}
+
+  });
+
+  calendar.render();
+});
+
+$(document).ready(function() {
+  // Når legg til avtale-modalen åpnes
+  $('#appointmentModal').on('show.bs.modal', function() {
+    // Fjern tidligere pasientvalg og hent pasientliste på nytt
+    fetchAndFillPatients('#appointmentPatient');
+  });
+
+  // Når rediger avtale-modalen åpnes
+  $('#editAppointmentModal').on('show.bs.modal', function() {
+    // Fjern tidligere pasientvalg og hent pasientliste på nytt for redigering
+    fetchAndFillPatients('#editAppointmentPatient');
+  });
+
+  // Felles funksjon for å hente og fylle pasientvalg
+  function fetchAndFillPatients(selectElementId) {
+    $(selectElementId).empty(); // Fjern eksisterende valg
+    $.getJSON('/get_patients', function(data) {
+      if(data.length > 0) {
+        data.forEach(function(patient) {
+          $(selectElementId).append(new Option(patient.full_name, patient.id));
+        });
+      } else {
+        $(selectElementId).append(new Option('Ingen pasienter funnet', ''));
+      }
     });
-    </script>
-    <script>
-      $(document).ready(function() {
-        // Når modalen åpnes
-        $('#appointmentModal').on('show.bs.modal', function () {
-          // Fjern tidligere pasientvalg
-          $('#appointmentPatient').empty();
-      
-          // Hent pasientliste fra serveren
-          $.getJSON('/get_patients', function(data) {
-            // Sjekk om det er pasienter å vise
-            if(data.length > 0) {
-              data.forEach(function(patient) {
-                // Legg til hver pasient som et valg
-                $('#appointmentPatient').append(new Option(patient.full_name, patient.id));
-              });
-            } else {
-              // Ingen pasienter funnet
-              $('#appointmentPatient').append(new Option('Ingen pasienter funnet', ''));
-            }
-          });
-        });
-      
-        // Håndter innsending av skjemaet
-        $('#appointmentForm').on('submit', function(e) {
-          e.preventDefault(); // Forhindre standard skjemainnsending
-      
-          // Samle data fra skjemaet
-          var appointmentData = {
-            datetime: $('#appointmentDate').val(),
-            description: $('#appointmentDescription').val(),
-            patient_id: $('#appointmentPatient').val() // Inkluder valgt pasient-ID
-          };
-      
-          // Send data til serveren
-          $.post('/add_appointment', appointmentData, function() {
-            $('#appointmentModal').modal('hide'); // Lukk modalen
-            // Oppdater kalenderen eller utfør andre handlinger etter behov
-          });
-        });
-      });
-      </script>
-      
-        
-    
+  }
+
+  // Håndter innsending av skjemaet for å legge til en ny avtale
+  $('#appointmentForm').on('submit', function(e) {
+    e.preventDefault(); // Forhindre standard skjemainnsending
+    // Samle data og send til serveren, deretter oppdater kalenderen
+    submitAppointmentData('/add_appointment', '#appointmentModal');
+  });
+
+  // Håndter innsending av skjemaet for å redigere en eksisterende avtale
+  $('#editAppointmentForm').on('submit', function(e) {
+    e.preventDefault(); // Forhindre standard skjemainnsending
+    // Samle data og send til serveren, deretter oppdater kalenderen
+    submitAppointmentData('/update_appointment', '#editAppointmentModal');
+  });
+
+  // Felles funksjon for å sende avtaledetaljer til serveren og oppdatere kalenderen
+  function submitAppointmentData(endpoint, modalId) {
+  var appointmentData = {
+    id: $(modalId + ' #appointmentId').val(),
+    datetime: $(modalId + ' #editAppointmentDate').val(),
+    description: $(modalId + ' #editAppointmentDescription').val(),
+    patient_id: $(modalId + ' #editAppointmentPatient').val()
+  };
+
+  $.ajax({
+    url: endpoint,
+    type: 'POST',
+    contentType: 'application/json',  // Pass på at denne er satt
+    data: JSON.stringify(appointmentData),  // Strengifiser dataen
+    success: function(response) {
+      $(modalId).modal('hide');
+      calendar.refetchEvents();
+    },
+    error: function(xhr, status, error) {
+      console.error("Update failed: ", status, error);
+    }
+  });
+}
+
+});
+</script>
 {% endblock %}
+
