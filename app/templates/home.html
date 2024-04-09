@@ -32,18 +32,47 @@
     });
     </script>
     <script>
-        $('#appointmentForm').on('submit', function(e) {
-          e.preventDefault(); // Forhindre standard skjemainnsending
-          // Samle data fra skjemaet
-          var datetime = $('#appointmentDate').val();
-          var description = $('#appointmentDescription').val();
-          // Send data til serveren
-          $.post('/add_appointment', {datetime: datetime, description: description}, function() {
-            $('#appointmentModal').modal('hide'); // Lukk modalen
-            calendar.refetchEvents(); // Oppdater kalenderen
+      $(document).ready(function() {
+        // Når modalen åpnes
+        $('#appointmentModal').on('show.bs.modal', function () {
+          // Fjern tidligere pasientvalg
+          $('#appointmentPatient').empty();
+      
+          // Hent pasientliste fra serveren
+          $.getJSON('/get_patients', function(data) {
+            // Sjekk om det er pasienter å vise
+            if(data.length > 0) {
+              data.forEach(function(patient) {
+                // Legg til hver pasient som et valg
+                $('#appointmentPatient').append(new Option(patient.full_name, patient.id));
+              });
+            } else {
+              // Ingen pasienter funnet
+              $('#appointmentPatient').append(new Option('Ingen pasienter funnet', ''));
+            }
           });
         });
-        </script>
+      
+        // Håndter innsending av skjemaet
+        $('#appointmentForm').on('submit', function(e) {
+          e.preventDefault(); // Forhindre standard skjemainnsending
+      
+          // Samle data fra skjemaet
+          var appointmentData = {
+            datetime: $('#appointmentDate').val(),
+            description: $('#appointmentDescription').val(),
+            patient_id: $('#appointmentPatient').val() // Inkluder valgt pasient-ID
+          };
+      
+          // Send data til serveren
+          $.post('/add_appointment', appointmentData, function() {
+            $('#appointmentModal').modal('hide'); // Lukk modalen
+            // Oppdater kalenderen eller utfør andre handlinger etter behov
+          });
+        });
+      });
+      </script>
+      
         
     
 {% endblock %}

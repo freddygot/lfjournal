@@ -75,6 +75,18 @@ def patients():
         print(form.errors)  # Skriver ut valideringsfeilene
     patients = Patient.query.filter_by(psychologist_id=current_user.id).all()
     return render_template('patients.html', title='My Patients', form=form, patients=patients)
+
+@app.route("/get_patients")
+@login_required
+def get_patients():
+    # Anta at hver psykolog har sine egne pasienter, og vi henter bare pasienter for den innloggede psykologen
+    patients = Patient.query.filter_by(psychologist_id=current_user.id).all()
+    patient_list = [
+        {"id": patient.id, "full_name": patient.first_name + " " + patient.last_name}
+        for patient in patients
+    ]
+    return jsonify(patient_list)
+
     
 @app.route("/get_appointments")
 def get_appointments():
