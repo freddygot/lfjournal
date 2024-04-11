@@ -1,21 +1,22 @@
-<!-- edit_appointment_modal.html -->
 <div class="modal fade" id="editAppointmentModal" tabindex="-1" aria-labelledby="editAppointmentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editAppointmentModalLabel">Rediger avtale</h5>
+          <h5 class="modal-title" id="editAppointmentModalLabel">Rediger Avtale</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form id="editAppointmentForm">
-            <input type="hidden" id="appointmentId" value="">
+            <!-- Skjult inputfelt for avtale ID -->
+            <input type="hidden" id="editAppointmentId" name="appointmentId">
+            
             <div class="mb-3">
-              <label for="editAppointmentDate" class="form-label">Dato og tid</label>
+              <label for="editAppointmentDateTime" class="form-label">Dato og Tid</label>
               <input type="datetime-local" class="form-control" id="editAppointmentDate" required>
             </div>
             <div class="mb-3">
               <label for="editAppointmentDescription" class="form-label">Beskrivelse</label>
-              <input type="text" class="form-control" id="editAppointmentDescription" required>
+              <textarea class="form-control" id="editAppointmentDescription" required></textarea>
             </div>
             <div class="mb-3">
               <label for="editAppointmentPatient" class="form-label">Pasient</label>
@@ -23,10 +24,9 @@
                 <!-- Pasientvalg fylles dynamisk -->
               </select>
             </div>
-            <button type="submit" class="btn btn-primary">Oppdater avtale</button>
+            <button type="submit" class="btn btn-primary">Oppdater Avtale</button>
           </form>
         </div>
       </div>
     </div>
   </div>
-  
